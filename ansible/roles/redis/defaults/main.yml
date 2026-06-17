@@ -1,0 +1,33 @@
+---
+# Version to install/run. Overridden per-invocation by the CLI via --extra-vars.
+redis_version: "7.0.15"
+
+# Source tarball location. download.redis.io hosts exact tagged releases.
+redis_download_base: "https://download.redis.io/releases"
+
+# Versioned install layout enables fast, reversible upgrades/rollbacks:
+#   /opt/redis/<version>/bin/redis-server
+#   /usr/local/bin/redis-server -> the "active" version (symlink)
+redis_opt_root: "/opt/redis"
+redis_bin_dir: "/usr/local/bin"
+# Parallel build jobs PER NODE. All 6 nodes compile from source at the same
+# time, so real concurrency is 6 x this value. Capped at 2 so the build fits
+# on memory-constrained hosts (e.g. a 4 GiB Podman/WSL VM) without the linker
+# being OOM-killed mid-compile ("install: cannot stat 'redis-server'").
+redis_build_jobs: 2
+
+# Runtime paths.
+redis_conf_dir: "/etc/redis"
+redis_conf_file: "/etc/redis/redis.conf"
+redis_data_dir: "/var/lib/redis"
+redis_log_dir: "/var/log/redis"
+redis_log_file: "/var/log/redis/redis.log"
+redis_pid_file: "/var/run/redis_6379.pid"
+redis_cluster_config_file: "nodes-6379.conf"
+
+# Cluster/runtime config knobs.
+redis_port: 6379
+redis_cluster_node_timeout: 5000
+redis_bind: "0.0.0.0"
+redis_appendonly: "yes"
+redis_maxmemory_policy: "noeviction"

@@ -1,0 +1,62 @@
+{"ts":"2026-06-17T03:22:44.303277085Z","event":"start","command":"upgrade"}
+{"ts":"2026-06-17T03:22:44.704184743Z","event":"prereq_ok","runtime":"docker","runtime_version":"29.5.3","ansible_version":"2.17.14"}
+{"ts":"2026-06-17T03:22:44.709480101Z","event":"step","msg":"Pre-flight checks"}
+{"ts":"2026-06-17T03:22:44.734690198Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-1"}
+{"ts":"2026-06-17T03:22:51.368737494Z","event":"ok","msg":"cluster_state:ok"}
+{"ts":"2026-06-17T03:22:51.373974665Z","event":"ok","msg":"all 6 nodes reachable"}
+{"ts":"2026-06-17T03:22:51.375965508Z","event":"ok","msg":"current version(s) [7.0.15] differ from target v7.2.6"}
+{"ts":"2026-06-17T03:22:51.376301915Z","event":"step","msg":"Establishing pre-upgrade data integrity baseline"}
+{"ts":"2026-06-17T03:22:51.376871077Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-1"}
+{"ts":"2026-06-17T03:22:58.271132550Z","event":"verify_result","verified":"1000","missing":"0","mismatched":"0","pass":"true"}
+{"ts":"2026-06-17T03:22:58.273011568Z","event":"step","msg":"[1/6] Upgrading replica redis-node-4 (10.10.0.14) -> v7.2.6"}
+{"ts":"2026-06-17T03:22:58.273465671Z","event":"step","msg":"  redis-node-4: stop -> install Redis 7.2.6 -> start"}
+{"ts":"2026-06-17T03:22:58.273687383Z","event":"ansible","playbook":"upgrade.yml","limit":"redis-node-4"}
+{"ts":"2026-06-17T03:24:52.504384914Z","event":"step","msg":"  redis-node-4: waiting to rejoin cluster + sync"}
+{"ts":"2026-06-17T03:24:52.508350210Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-4"}
+{"ts":"2026-06-17T03:25:29.934600210Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-4"}
+{"ts":"2026-06-17T03:25:36.781152063Z","event":"step","msg":"[2/6] Upgrading replica redis-node-5 (10.10.0.15) -> v7.2.6"}
+{"ts":"2026-06-17T03:25:36.781480475Z","event":"step","msg":"  redis-node-5: stop -> install Redis 7.2.6 -> start"}
+{"ts":"2026-06-17T03:25:36.781763592Z","event":"ansible","playbook":"upgrade.yml","limit":"redis-node-5"}
+{"ts":"2026-06-17T03:27:32.991782578Z","event":"step","msg":"  redis-node-5: waiting to rejoin cluster + sync"}
+{"ts":"2026-06-17T03:27:32.992385300Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-5"}
+{"ts":"2026-06-17T03:28:07.718552503Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-5"}
+{"ts":"2026-06-17T03:28:14.973530717Z","event":"step","msg":"[3/6] Upgrading replica redis-node-6 (10.10.0.16) -> v7.2.6"}
+{"ts":"2026-06-17T03:28:14.974018842Z","event":"step","msg":"  redis-node-6: stop -> install Redis 7.2.6 -> start"}
+{"ts":"2026-06-17T03:28:14.974289511Z","event":"ansible","playbook":"upgrade.yml","limit":"redis-node-6"}
+{"ts":"2026-06-17T03:30:09.657088519Z","event":"step","msg":"  redis-node-6: waiting to rejoin cluster + sync"}
+{"ts":"2026-06-17T03:30:09.657640799Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-6"}
+{"ts":"2026-06-17T03:30:46.887477317Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-6"}
+{"ts":"2026-06-17T03:30:54.375214160Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-1"}
+{"ts":"2026-06-17T03:31:01.591921343Z","event":"step","msg":"[4/6] Upgrading master redis-node-1 (10.10.0.11): failing over to replica redis-node-5 (10.10.0.15)"}
+{"ts":"2026-06-17T03:31:01.592161327Z","event":"ansible","playbook":"failover.yml","limit":"redis-node-5"}
+{"ts":"2026-06-17T03:31:02.706620915Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-5"}
+{"ts":"2026-06-17T03:31:09.552055198Z","event":"ok","msg":"failover complete: 10.10.0.15 is now master, 10.10.0.11 is now replica"}
+{"ts":"2026-06-17T03:31:09.552422685Z","event":"step","msg":"  redis-node-1: stop -> install Redis 7.2.6 -> start"}
+{"ts":"2026-06-17T03:31:09.552630582Z","event":"ansible","playbook":"upgrade.yml","limit":"redis-node-1"}
+{"ts":"2026-06-17T03:33:07.883995734Z","event":"step","msg":"  redis-node-1: waiting to rejoin cluster + sync"}
+{"ts":"2026-06-17T03:33:07.885086050Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-5"}
+{"ts":"2026-06-17T03:33:14.907764021Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-5"}
+{"ts":"2026-06-17T03:33:21.983725584Z","event":"step","msg":"[5/6] Upgrading master redis-node-2 (10.10.0.12): failing over to replica redis-node-6 (10.10.0.16)"}
+{"ts":"2026-06-17T03:33:21.984028218Z","event":"ansible","playbook":"failover.yml","limit":"redis-node-6"}
+{"ts":"2026-06-17T03:33:23.514115427Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-6"}
+{"ts":"2026-06-17T03:33:30.466849926Z","event":"ok","msg":"failover complete: 10.10.0.16 is now master, 10.10.0.12 is now replica"}
+{"ts":"2026-06-17T03:33:30.467222345Z","event":"step","msg":"  redis-node-2: stop -> install Redis 7.2.6 -> start"}
+{"ts":"2026-06-17T03:33:30.467489979Z","event":"ansible","playbook":"upgrade.yml","limit":"redis-node-2"}
+{"ts":"2026-06-17T03:35:31.375044204Z","event":"step","msg":"  redis-node-2: waiting to rejoin cluster + sync"}
+{"ts":"2026-06-17T03:35:31.375451926Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-6"}
+{"ts":"2026-06-17T03:35:38.396033767Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-6"}
+{"ts":"2026-06-17T03:35:45.408972313Z","event":"step","msg":"[6/6] Upgrading master redis-node-3 (10.10.0.13): failing over to replica redis-node-4 (10.10.0.14)"}
+{"ts":"2026-06-17T03:35:45.409139673Z","event":"ansible","playbook":"failover.yml","limit":"redis-node-4"}
+{"ts":"2026-06-17T03:35:46.511891966Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-4"}
+{"ts":"2026-06-17T03:35:53.997736334Z","event":"ok","msg":"failover complete: 10.10.0.14 is now master, 10.10.0.13 is now replica"}
+{"ts":"2026-06-17T03:35:53.997991916Z","event":"step","msg":"  redis-node-3: stop -> install Redis 7.2.6 -> start"}
+{"ts":"2026-06-17T03:35:53.998187021Z","event":"ansible","playbook":"upgrade.yml","limit":"redis-node-3"}
+{"ts":"2026-06-17T03:37:54.081636277Z","event":"step","msg":"  redis-node-3: waiting to rejoin cluster + sync"}
+{"ts":"2026-06-17T03:37:54.082087618Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-4"}
+{"ts":"2026-06-17T03:38:01.655372438Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-4"}
+{"ts":"2026-06-17T03:38:08.256415394Z","event":"step","msg":"Post-upgrade verification"}
+{"ts":"2026-06-17T03:38:08.257316798Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-1"}
+{"ts":"2026-06-17T03:38:15.700665445Z","event":"verify_result","verified":"1000","missing":"0","mismatched":"0","pass":"true"}
+{"ts":"2026-06-17T03:38:15.701119695Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-1"}
+{"ts":"2026-06-17T03:38:22.657184491Z","event":"upgrade_complete","verified":"1000","target":"7.2.6"}
+{"ts":"2026-06-17T03:38:22.657424416Z","event":"end"}

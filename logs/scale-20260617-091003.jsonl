@@ -1,0 +1,20 @@
+{"ts":"2026-06-17T03:40:03.953758041Z","event":"start","command":"scale"}
+{"ts":"2026-06-17T03:40:04.325995283Z","event":"prereq_ok","runtime":"docker","runtime_version":"29.5.3","ansible_version":"2.17.14"}
+{"ts":"2026-06-17T03:40:04.346182895Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-1"}
+{"ts":"2026-06-17T03:40:10.844516107Z","event":"step","msg":"Scaling out: new master redis-node-7 (10.10.0.17), new replica redis-node-8 (10.10.0.18), version 7.2.6"}
+{"ts":"2026-06-17T03:40:11.748125896Z","event":"ok","msg":"redis-node-7 up (cluster IP 10.10.0.17, ssh :2217)"}
+{"ts":"2026-06-17T03:40:12.229642832Z","event":"ok","msg":"redis-node-8 up (cluster IP 10.10.0.18, ssh :2218)"}
+{"ts":"2026-06-17T03:40:12.382235085Z","event":"ok","msg":"SSH key injected into redis-node-7"}
+{"ts":"2026-06-17T03:40:12.518361570Z","event":"ok","msg":"SSH key injected into redis-node-8"}
+{"ts":"2026-06-17T03:40:14.519432570Z","event":"step","msg":"Installing Redis 7.2.6 on new nodes"}
+{"ts":"2026-06-17T03:40:14.520951115Z","event":"ansible","limit":"redis-node-7,redis-node-8","playbook":"node_setup.yml"}
+{"ts":"2026-06-17T03:42:56.257707621Z","event":"step","msg":"Adding 10.10.0.17 as a new master"}
+{"ts":"2026-06-17T03:42:56.263139485Z","event":"ansible","playbook":"cluster_admin.yml"}
+{"ts":"2026-06-17T03:42:57.563354215Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-1"}
+{"ts":"2026-06-17T03:43:04.784531609Z","event":"step","msg":"Adding 10.10.0.18 as a replica of new master 43fc23d0eef83ed392b45c6d75335afe6a2daa66"}
+{"ts":"2026-06-17T03:43:04.785035322Z","event":"ansible","playbook":"cluster_admin.yml"}
+{"ts":"2026-06-17T03:43:07.470899559Z","event":"step","msg":"Rebalancing hash slots across all masters"}
+{"ts":"2026-06-17T03:43:07.471390381Z","event":"ansible","playbook":"cluster_admin.yml"}
+{"ts":"2026-06-17T03:44:49.453882862Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-1"}
+{"ts":"2026-06-17T03:44:56.358378957Z","event":"ok","msg":"Scale-out complete: 4 masters, cluster_state:ok"}
+{"ts":"2026-06-17T03:44:56.358721341Z","event":"end"}

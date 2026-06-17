@@ -1,0 +1,6 @@
+{"ts":"2026-06-17T03:10:00.164772037Z","event":"start","command":"provision"}
+{"ts":"2026-06-17T03:10:00.974224443Z","event":"prereq_ok","runtime":"docker","runtime_version":"29.5.3","ansible_version":"2.17.14"}
+{"ts":"2026-06-17T03:10:01.010055576Z","event":"step","msg":"Provisioning Redis 7.0.15 on 6 nodes and forming the cluster"}
+{"ts":"2026-06-17T03:10:01.011855854Z","event":"ansible","playbook":"provision.yml"}
+{"ts":"2026-06-17T03:10:02.245787089Z","event":"error","msg":"ansible-playbook provision.yml failed (exit 4)"}
+{"ts":"2026-06-17T03:10:02.245957088Z","event":"end"}

@@ -1,0 +1,59 @@
+---
+# Build the exact Redis version from source and install it under a versioned
+# prefix, then point the active symlinks at it. Idempotent: a version already
+# built is not rebuilt; the symlink swap is what makes a node "run" a version.
+
+- name: Ensure /opt/redis root exists
+  ansible.builtin.file:
+    path: "{{ redis_opt_root }}"
+    state: directory
+    mode: "0755"
+
+- name: Check whether this Redis version is already built
+  ansible.builtin.stat:
+    path: "{{ redis_opt_root }}/{{ redis_version }}/bin/redis-server"
+  register: redis_built
+
+- name: "Build Redis from source: {{ redis_version }}"
+  when: not redis_built.stat.exists
+  block:
+    - name: "Download Redis source tarball: {{ redis_version }}"
+      ansible.builtin.get_url:
+        url: "{{ redis_download_base }}/redis-{{ redis_version }}.tar.gz"
+        dest: "/tmp/redis-{{ redis_version }}.tar.gz"
+        mode: "0644"
+        timeout: 60
+
+    - name: Unpack source
+      ansible.builtin.unarchive:
+        src: "/tmp/redis-{{ redis_version }}.tar.gz"
+        dest: "/tmp"
+        remote_src: true
+        creates: "/tmp/redis-{{ redis_version }}/Makefile"
+
+    # Plain `make` via the builtin command module — no external collections
+    # (the rules forbid prebuilt Redis roles/collections).
+    - name: Compile Redis {{ redis_version }}
+      ansible.builtin.command:
+        cmd: "make -j{{ redis_build_jobs }} BUILD_TLS=no"
+        chdir: "/tmp/redis-{{ redis_version }}"
+        creates: "/tmp/redis-{{ redis_version }}/src/redis-server"
+
+    - name: "Install Redis to versioned prefix: {{ redis_version }}"
+      ansible.builtin.command:
+        cmd: "make PREFIX={{ redis_opt_root }}/{{ redis_version }} install"
+        chdir: "/tmp/redis-{{ redis_version }}"
+        creates: "{{ redis_opt_root }}/{{ redis_version }}/bin/redis-server"
+
+- name: Point active symlinks at Redis {{ redis_version }}
+  ansible.builtin.file:
+    src: "{{ redis_opt_root }}/{{ redis_version }}/bin/{{ item }}"
+    dest: "{{ redis_bin_dir }}/{{ item }}"
+    state: link
+    force: true
+  loop:
+    - redis-server
+    - redis-cli
+    - redis-benchmark
+    - redis-check-aof
+    - redis-check-rdb

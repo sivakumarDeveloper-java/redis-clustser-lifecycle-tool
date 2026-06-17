@@ -1,0 +1,7 @@
+INFO	ok
+NODE	bae8c7ea479d5b402bd462ad9340bc69d2c1a105	10.10.0.11	6379	replica	0a4cf0acc4dc750caf01aaecf89f263ae4db1dc8	connected	7.2.6	1.92M	331	up	10.10.0.15	
+NODE	99c24a5c1a33ce79935c721e064c70dcddfe7bc9	10.10.0.12	6379	replica	ef70619a8ee5fd399daa37a7d46d08a71edb4686	connected	7.2.6	1.81M	334	up	10.10.0.16	
+NODE	0c2338cc441ce4b02c9a89fe497ebe61bb19b9aa	10.10.0.13	6379	replica	3cf500b6f06e3b12df0cf86ac1a570d1c71efffa	connected	7.2.6	1.81M	335	up	10.10.0.14	
+NODE	3cf500b6f06e3b12df0cf86ac1a570d1c71efffa	10.10.0.14	6379	master	-	connected	7.2.6	2.00M	335			0-1364,5461,12288-16383
+NODE	0a4cf0acc4dc750caf01aaecf89f263ae4db1dc8	10.10.0.15	6379	master	-	connected	7.2.6	2.00M	331			1365-5460,5462-6826
+NODE	ef70619a8ee5fd399daa37a7d46d08a71edb4686	10.10.0.16	6379	master	-	connected	7.2.6	2.00M	334			6827-12287

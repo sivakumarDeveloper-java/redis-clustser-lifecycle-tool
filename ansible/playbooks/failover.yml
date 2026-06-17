@@ -1,0 +1,15 @@
+---
+# Promote the targeted replica to master via CLUSTER FAILOVER. The CLI then
+# polls the topology until the role swap is observed.
+- name: Trigger cluster failover on replica
+  hosts: cluster
+  gather_facts: false
+  tasks:
+    - name: CLUSTER FAILOVER
+      ansible.builtin.command: redis-cli -p {{ redis_port }} cluster failover
+      register: fo
+      changed_when: true
+
+    - name: Failover requested
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} ({{ redis_ip }}): {{ fo.stdout }}"

@@ -1,0 +1,66 @@
+✓ Podman 5.8.2 found
+✓ Ansible 2.21.0 found
+Proceeding...
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-1]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-1]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-1]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-1]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-1]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-1 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+ok: [redis-node-1 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-1               : ok=7    changed=0    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-1]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-1]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-1]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-1]
+
+TASK [Run node-agent verify] ***************************************************
+ok: [redis-node-1]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-1 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-1 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-1               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+Full verification:
+  [PASS] Data integrity         — 1000/1000 verified, 0 missing, 0 mismatched
+  [PASS] Version consistency    — versions present: [7.2.6]
+  [PASS] Topology health        — 16384/16384 slots covered, every master has a replica: true
+  [PASS] Cluster state          — cluster_state:ok
+  [PASS] Replication links      — all replica links up
+
+✓ All checks passed

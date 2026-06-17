@@ -1,0 +1,33 @@
+---
+# Phase 4 — Upgrade a SINGLE node to a target Redis version:
+#   stop Redis -> build & activate the new version (reusing the redis role's
+#   install tasks) -> start Redis.
+#
+# The redis-tool CLI drives the cluster-level rolling strategy — replicas first,
+# CLUSTER FAILOVER on the replica before each master (see failover.yml), and the
+# "rejoin + cluster_state:ok" waits between nodes — and invokes this playbook
+# once per node with --limit. Keeping the per-node stop/install/start here as a
+# single upgrade.yml mirrors the submission layout while the CLI remains the
+# orchestrator (it does not replace Ansible).
+- name: Upgrade Redis on a node
+  hosts: cluster
+  gather_facts: true
+  tasks:
+    - name: Stop Redis (no-op if already down)
+      ansible.builtin.command: redis-ctl stop
+      register: redis_stop
+      changed_when: "'stopped' in redis_stop.stdout"
+
+    - name: "Build & activate Redis {{ redis_version }}"
+      ansible.builtin.include_role:
+        name: redis
+        tasks_from: install.yml
+
+    - name: Start Redis
+      ansible.builtin.command: redis-ctl start
+      register: redis_start
+      changed_when: "'started' in redis_start.stdout"
+
+    - name: Result
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }} ({{ redis_ip }}): now on Redis {{ redis_version }}"

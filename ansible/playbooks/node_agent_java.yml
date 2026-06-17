@@ -1,0 +1,58 @@
+---
+# Java variant of node_agent: ship the redis-tool jar to a node and run the
+# node-agent on it (facts/seed/verify). Unlike the Go agent (a static binary),
+# the jar is architecture-independent but needs a JRE — installed on demand.
+# The agent's tab-delimited output is written back to the control host.
+- name: Run node-agent data operation (Java)
+  hosts: cluster
+  gather_facts: true
+  vars:
+    agent_cmd: "{{ agent_cmd | default('facts') }}"
+    agent_keys: "{{ agent_keys | default(1000) }}"
+    agent_seed_ip: "{{ agent_seed_ip | default('127.0.0.1') }}"
+    out_dir: "{{ playbook_dir }}/../.runtime"
+  tasks:
+    # The jar is built with JDK 17, so the node needs a matching (>=17) runtime.
+    # OpenJDK 17 is in the Ubuntu 22.04 repos. apt is idempotent; the cache is
+    # refreshed at most hourly.
+    - name: Ensure OpenJDK 17 (headless JRE) is present
+      ansible.builtin.apt:
+        name: openjdk-17-jre-headless
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Locate the Java 17 runtime
+      ansible.builtin.shell:
+        cmd: set -o pipefail && ls -1 /usr/lib/jvm/java-17-openjdk-*/bin/java | head -1
+        executable: /bin/bash
+      register: java17
+      changed_when: false
+
+    - name: Copy redis-tool jar (the node-agent)
+      ansible.builtin.copy:
+        src: "{{ jar_src }}"
+        dest: /usr/local/lib/redis-tool.jar
+        mode: "0644"
+
+    - name: Run node-agent {{ agent_cmd }}
+      ansible.builtin.command: >-
+        {{ java17.stdout }} -jar /usr/local/lib/redis-tool.jar node-agent {{ agent_cmd }}
+        --keys {{ agent_keys }} --seed-ip {{ agent_seed_ip }}
+      register: agent_run
+      changed_when: false
+      failed_when: false
+
+    - name: Ensure runtime dir exists on control host
+      delegate_to: localhost
+      ansible.builtin.file:
+        path: "{{ out_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Write agent output to control host
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ agent_run.stdout }}"
+        dest: "{{ out_dir }}/agent_out.txt"
+        mode: "0644"

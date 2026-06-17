@@ -1,0 +1,13 @@
+---
+# Ensure Redis is running. redis-ctl is idempotent (no-op if already up), so
+# this is safe to run repeatedly.
+- name: Ensure Redis is started
+  ansible.builtin.command: redis-ctl start
+  register: redis_start
+  changed_when: "'started' in redis_start.stdout"
+
+- name: Wait for Redis to accept connections
+  ansible.builtin.wait_for:
+    host: 127.0.0.1
+    port: "{{ redis_port }}"
+    timeout: 30

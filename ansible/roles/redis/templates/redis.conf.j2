@@ -1,0 +1,30 @@
+# Managed by Ansible (redis role) — do not edit by hand.
+# Node: {{ inventory_hostname }} ({{ redis_ip }})
+
+port {{ redis_port }}
+bind {{ redis_bind }}
+protected-mode no
+
+# --- Cluster mode ---
+cluster-enabled yes
+cluster-config-file {{ redis_cluster_config_file }}
+cluster-node-timeout {{ redis_cluster_node_timeout }}
+# Announce the node's static container-network IP so the cluster bus advertises
+# a stable, reachable address to peers.
+cluster-announce-ip {{ redis_ip }}
+cluster-announce-port {{ redis_port }}
+cluster-announce-bus-port {{ redis_cluster_bus_port }}
+
+# --- Persistence ---
+dir {{ redis_data_dir }}
+appendonly {{ redis_appendonly }}
+appendfsync everysec
+
+# --- Process / logging ---
+daemonize yes
+pidfile {{ redis_pid_file }}
+logfile {{ redis_log_file }}
+loglevel notice
+
+# --- Memory ---
+maxmemory-policy {{ redis_maxmemory_policy }}

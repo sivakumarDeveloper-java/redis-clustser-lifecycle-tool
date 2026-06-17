@@ -1,0 +1,46 @@
+# Base image that simulates a real server: Ubuntu 22.04 + SSH.
+# Redis itself is NOT installed here — the Ansible playbooks build & install it.
+# We pre-bake only the OS-level build/runtime deps so provisioning is fast and
+# reproducible (these are not Redis, just the toolchain Ansible needs).
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        openssh-server \
+        sudo \
+        python3 \
+        ca-certificates \
+        wget \
+        curl \
+        build-essential \
+        pkg-config \
+        iproute2 \
+        procps \
+        net-tools \
+    && rm -rf /var/lib/apt/lists/*
+
+# SSH: key-based auth only, root login permitted with a key (no passwords).
+# StrictModes is turned OFF so sshd accepts a bind-mounted authorized_keys whose
+# host-side ownership/permissions differ from root — which is what happens when
+# Docker bind-mounts a host file (it keeps the host uid) into the container.
+RUN mkdir -p /var/run/sshd /root/.ssh \
+    && chmod 700 /root/.ssh \
+    && sed -i 's/^#\?PermitRootLogin.*/PermitRootLogin prohibit-password/' /etc/ssh/sshd_config \
+    && sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication no/' /etc/ssh/sshd_config \
+    && sed -i 's/^#\?PubkeyAuthentication.*/PubkeyAuthentication yes/' /etc/ssh/sshd_config \
+    && sed -i 's/^#\?StrictModes.*/StrictModes no/' /etc/ssh/sshd_config
+
+# The control node's public key is NOT baked into the image. It is bind-mounted
+# at runtime from ./authorized_keys (see infra/compose.yml), which `redis-tool
+# infra up` regenerates on every run. Keeping the image key-agnostic means a
+# freshly generated keypair can never mismatch a cached image — the Docker
+# pitfall where a fixed-tag image is reused without rebuilding.
+
+# Directories Redis will use once Ansible installs it.
+RUN mkdir -p /var/lib/redis /var/log/redis /etc/redis /opt/redis
+
+EXPOSE 22 6379 16379
+
+# sshd in the foreground is PID 1 — keeps the "server" alive.
+CMD ["/usr/sbin/sshd", "-D", "-e"]

@@ -1,0 +1,16 @@
+---
+# Run a redis-cli --cluster admin command (add-node, rebalance, del-node, ...)
+# from one existing node. The CLI passes the full command line as `admin_argv`
+# and the node to run it on as `admin_host`. Used by scale-out / scale-in.
+- name: Cluster admin command
+  hosts: "{{ admin_host | default('redis-node-1') }}"
+  gather_facts: false
+  tasks:
+    - name: "{{ admin_argv }}"
+      ansible.builtin.command: "{{ admin_argv }}"
+      register: admin_out
+      changed_when: true
+
+    - name: Result
+      ansible.builtin.debug:
+        var: admin_out.stdout_lines

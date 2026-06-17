@@ -1,0 +1,1006 @@
+✓ Podman 5.8.2 found
+✓ Ansible 2.21.0 found
+Proceeding...
+→ Pre-flight checks
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-1]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-1]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-1]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-1]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-1]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-1 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-1 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-1               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+✓ cluster_state:ok
+✓ all 6 nodes reachable
+✓ current version(s) [7.0.15] differ from target v7.2.6
+→ Establishing pre-upgrade data integrity baseline
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-1]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-1]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-1]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-1]
+
+TASK [Run node-agent verify] ***************************************************
+ok: [redis-node-1]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-1 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-1 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-1               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+PASS — 1000/1000 keys verified
+→ [1/6] Upgrading replica redis-node-4 (10.10.0.14) -> v7.2.6
+→   redis-node-4: stop -> install Redis 7.2.6 -> start
+
+PLAY [Upgrade Redis on a node] *************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-4]
+
+TASK [Stop Redis (no-op if already down)] **************************************
+changed: [redis-node-4]
+
+TASK [Build & activate Redis 7.2.6] ********************************************
+included: redis for redis-node-4
+
+TASK [redis : Ensure /opt/redis root exists] ***********************************
+ok: [redis-node-4]
+
+TASK [redis : Check whether this Redis version is already built] ***************
+ok: [redis-node-4]
+
+TASK [redis : Download Redis source tarball: 7.2.6] ****************************
+changed: [redis-node-4]
+
+TASK [redis : Unpack source] ***************************************************
+changed: [redis-node-4]
+
+TASK [redis : Compile Redis 7.2.6] *********************************************
+changed: [redis-node-4]
+
+TASK [redis : Install Redis to versioned prefix: 7.2.6] ************************
+changed: [redis-node-4]
+
+TASK [redis : Point active symlinks at Redis 7.2.6] ****************************
+changed: [redis-node-4] => (item=redis-server)
+changed: [redis-node-4] => (item=redis-cli)
+changed: [redis-node-4] => (item=redis-benchmark)
+changed: [redis-node-4] => (item=redis-check-aof)
+changed: [redis-node-4] => (item=redis-check-rdb)
+
+TASK [Start Redis] *************************************************************
+changed: [redis-node-4]
+
+TASK [Result] ******************************************************************
+ok: [redis-node-4] => {
+    "msg": "redis-node-4 (10.10.0.14): now on Redis 7.2.6"
+}
+
+PLAY RECAP *********************************************************************
+redis-node-4               : ok=12   changed=7    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+→   redis-node-4: waiting to rejoin cluster + sync
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-4]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+changed: [redis-node-4]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-4]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+changed: [redis-node-4]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-4]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-4 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-4 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-4               : ok=7    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-4]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-4]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-4]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-4]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-4]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-4 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-4 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-4               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+[1/6] Upgraded replica 10.10.0.14 — cluster: ok
+→ [2/6] Upgrading replica redis-node-5 (10.10.0.15) -> v7.2.6
+→   redis-node-5: stop -> install Redis 7.2.6 -> start
+
+PLAY [Upgrade Redis on a node] *************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-5]
+
+TASK [Stop Redis (no-op if already down)] **************************************
+changed: [redis-node-5]
+
+TASK [Build & activate Redis 7.2.6] ********************************************
+included: redis for redis-node-5
+
+TASK [redis : Ensure /opt/redis root exists] ***********************************
+ok: [redis-node-5]
+
+TASK [redis : Check whether this Redis version is already built] ***************
+ok: [redis-node-5]
+
+TASK [redis : Download Redis source tarball: 7.2.6] ****************************
+changed: [redis-node-5]
+
+TASK [redis : Unpack source] ***************************************************
+changed: [redis-node-5]
+
+TASK [redis : Compile Redis 7.2.6] *********************************************
+changed: [redis-node-5]
+
+TASK [redis : Install Redis to versioned prefix: 7.2.6] ************************
+changed: [redis-node-5]
+
+TASK [redis : Point active symlinks at Redis 7.2.6] ****************************
+changed: [redis-node-5] => (item=redis-server)
+changed: [redis-node-5] => (item=redis-cli)
+changed: [redis-node-5] => (item=redis-benchmark)
+changed: [redis-node-5] => (item=redis-check-aof)
+changed: [redis-node-5] => (item=redis-check-rdb)
+
+TASK [Start Redis] *************************************************************
+changed: [redis-node-5]
+
+TASK [Result] ******************************************************************
+ok: [redis-node-5] => {
+    "msg": "redis-node-5 (10.10.0.15): now on Redis 7.2.6"
+}
+
+PLAY RECAP *********************************************************************
+redis-node-5               : ok=12   changed=7    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+→   redis-node-5: waiting to rejoin cluster + sync
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-5]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+changed: [redis-node-5]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-5]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+changed: [redis-node-5]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-5]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-5 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-5 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-5               : ok=7    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-5]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-5]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-5]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-5]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-5]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-5 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-5 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-5               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+[2/6] Upgraded replica 10.10.0.15 — cluster: ok
+→ [3/6] Upgrading replica redis-node-6 (10.10.0.16) -> v7.2.6
+→   redis-node-6: stop -> install Redis 7.2.6 -> start
+
+PLAY [Upgrade Redis on a node] *************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-6]
+
+TASK [Stop Redis (no-op if already down)] **************************************
+changed: [redis-node-6]
+
+TASK [Build & activate Redis 7.2.6] ********************************************
+included: redis for redis-node-6
+
+TASK [redis : Ensure /opt/redis root exists] ***********************************
+ok: [redis-node-6]
+
+TASK [redis : Check whether this Redis version is already built] ***************
+ok: [redis-node-6]
+
+TASK [redis : Download Redis source tarball: 7.2.6] ****************************
+changed: [redis-node-6]
+
+TASK [redis : Unpack source] ***************************************************
+changed: [redis-node-6]
+
+TASK [redis : Compile Redis 7.2.6] *********************************************
+changed: [redis-node-6]
+
+TASK [redis : Install Redis to versioned prefix: 7.2.6] ************************
+changed: [redis-node-6]
+
+TASK [redis : Point active symlinks at Redis 7.2.6] ****************************
+changed: [redis-node-6] => (item=redis-server)
+changed: [redis-node-6] => (item=redis-cli)
+changed: [redis-node-6] => (item=redis-benchmark)
+changed: [redis-node-6] => (item=redis-check-aof)
+changed: [redis-node-6] => (item=redis-check-rdb)
+
+TASK [Start Redis] *************************************************************
+changed: [redis-node-6]
+
+TASK [Result] ******************************************************************
+ok: [redis-node-6] => {
+    "msg": "redis-node-6 (10.10.0.16): now on Redis 7.2.6"
+}
+
+PLAY RECAP *********************************************************************
+redis-node-6               : ok=12   changed=7    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+→   redis-node-6: waiting to rejoin cluster + sync
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-6]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+changed: [redis-node-6]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-6]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+changed: [redis-node-6]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-6]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-6 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-6 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-6               : ok=7    changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-6]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-6]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-6]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-6]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-6]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-6 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-6 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-6               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+[3/6] Upgraded replica 10.10.0.16 — cluster: ok
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-1]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-1]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-1]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-1]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-1]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-1 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-1 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-1               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+→ [4/6] Upgrading master redis-node-1 (10.10.0.11): failing over to replica redis-node-5 (10.10.0.15)
+
+PLAY [Trigger cluster failover on replica] *************************************
+
+TASK [CLUSTER FAILOVER] ********************************************************
+changed: [redis-node-5]
+
+TASK [Failover requested] ******************************************************
+ok: [redis-node-5] => {
+    "msg": "redis-node-5 (10.10.0.15): OK"
+}
+
+PLAY RECAP *********************************************************************
+redis-node-5               : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-5]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-5]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-5]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-5]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-5]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-5 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-5 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-5               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+✓ failover complete: 10.10.0.15 is now master, 10.10.0.11 is now replica
+→   redis-node-1: stop -> install Redis 7.2.6 -> start
+
+PLAY [Upgrade Redis on a node] *************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-1]
+
+TASK [Stop Redis (no-op if already down)] **************************************
+changed: [redis-node-1]
+
+TASK [Build & activate Redis 7.2.6] ********************************************
+included: redis for redis-node-1
+
+TASK [redis : Ensure /opt/redis root exists] ***********************************
+ok: [redis-node-1]
+
+TASK [redis : Check whether this Redis version is already built] ***************
+ok: [redis-node-1]
+
+TASK [redis : Download Redis source tarball: 7.2.6] ****************************
+changed: [redis-node-1]
+
+TASK [redis : Unpack source] ***************************************************
+changed: [redis-node-1]
+
+TASK [redis : Compile Redis 7.2.6] *********************************************
+changed: [redis-node-1]
+
+TASK [redis : Install Redis to versioned prefix: 7.2.6] ************************
+changed: [redis-node-1]
+
+TASK [redis : Point active symlinks at Redis 7.2.6] ****************************
+changed: [redis-node-1] => (item=redis-server)
+changed: [redis-node-1] => (item=redis-cli)
+changed: [redis-node-1] => (item=redis-benchmark)
+changed: [redis-node-1] => (item=redis-check-aof)
+changed: [redis-node-1] => (item=redis-check-rdb)
+
+TASK [Start Redis] *************************************************************
+changed: [redis-node-1]
+
+TASK [Result] ******************************************************************
+ok: [redis-node-1] => {
+    "msg": "redis-node-1 (10.10.0.11): now on Redis 7.2.6"
+}
+
+PLAY RECAP *********************************************************************
+redis-node-1               : ok=12   changed=7    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+→   redis-node-1: waiting to rejoin cluster + sync
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-5]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-5]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-5]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-5]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-5]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-5 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-5 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-5               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-5]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-5]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-5]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-5]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-5]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-5 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-5 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-5               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-5]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-5]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-5]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-5]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-5]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-5 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-5 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-5               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+[4/6] Upgraded master 10.10.0.11 (now replica) — cluster: ok
+→ [5/6] Upgrading master redis-node-2 (10.10.0.12): failing over to replica redis-node-6 (10.10.0.16)
+
+PLAY [Trigger cluster failover on replica] *************************************
+
+TASK [CLUSTER FAILOVER] ********************************************************
+changed: [redis-node-6]
+
+TASK [Failover requested] ******************************************************
+ok: [redis-node-6] => {
+    "msg": "redis-node-6 (10.10.0.16): OK"
+}
+
+PLAY RECAP *********************************************************************
+redis-node-6               : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-6]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-6]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-6]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-6]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-6]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-6 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-6 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-6               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+✓ failover complete: 10.10.0.16 is now master, 10.10.0.12 is now replica
+→   redis-node-2: stop -> install Redis 7.2.6 -> start
+
+PLAY [Upgrade Redis on a node] *************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-2]
+
+TASK [Stop Redis (no-op if already down)] **************************************
+changed: [redis-node-2]
+
+TASK [Build & activate Redis 7.2.6] ********************************************
+included: redis for redis-node-2
+
+TASK [redis : Ensure /opt/redis root exists] ***********************************
+ok: [redis-node-2]
+
+TASK [redis : Check whether this Redis version is already built] ***************
+ok: [redis-node-2]
+
+TASK [redis : Download Redis source tarball: 7.2.6] ****************************
+changed: [redis-node-2]
+
+TASK [redis : Unpack source] ***************************************************
+changed: [redis-node-2]
+
+TASK [redis : Compile Redis 7.2.6] *********************************************
+changed: [redis-node-2]
+
+TASK [redis : Install Redis to versioned prefix: 7.2.6] ************************
+changed: [redis-node-2]
+
+TASK [redis : Point active symlinks at Redis 7.2.6] ****************************
+changed: [redis-node-2] => (item=redis-server)
+changed: [redis-node-2] => (item=redis-cli)
+changed: [redis-node-2] => (item=redis-benchmark)
+changed: [redis-node-2] => (item=redis-check-aof)
+changed: [redis-node-2] => (item=redis-check-rdb)
+
+TASK [Start Redis] *************************************************************
+changed: [redis-node-2]
+
+TASK [Result] ******************************************************************
+ok: [redis-node-2] => {
+    "msg": "redis-node-2 (10.10.0.12): now on Redis 7.2.6"
+}
+
+PLAY RECAP *********************************************************************
+redis-node-2               : ok=12   changed=7    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+→   redis-node-2: waiting to rejoin cluster + sync
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-6]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-6]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-6]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-6]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-6]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-6 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-6 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-6               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-6]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-6]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-6]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-6]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-6]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-6 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-6 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-6               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-6]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-6]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-6]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-6]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-6]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-6 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-6 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-6               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+[5/6] Upgraded master 10.10.0.12 (now replica) — cluster: ok
+→ [6/6] Upgrading master redis-node-3 (10.10.0.13): failing over to replica redis-node-4 (10.10.0.14)
+
+PLAY [Trigger cluster failover on replica] *************************************
+
+TASK [CLUSTER FAILOVER] ********************************************************
+changed: [redis-node-4]
+
+TASK [Failover requested] ******************************************************
+ok: [redis-node-4] => {
+    "msg": "redis-node-4 (10.10.0.14): OK"
+}
+
+PLAY RECAP *********************************************************************
+redis-node-4               : ok=2    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-4]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-4]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-4]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-4]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-4]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-4 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-4 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-4               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+✓ failover complete: 10.10.0.14 is now master, 10.10.0.13 is now replica
+→   redis-node-3: stop -> install Redis 7.2.6 -> start
+
+PLAY [Upgrade Redis on a node] *************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-3]
+
+TASK [Stop Redis (no-op if already down)] **************************************
+changed: [redis-node-3]
+
+TASK [Build & activate Redis 7.2.6] ********************************************
+included: redis for redis-node-3
+
+TASK [redis : Ensure /opt/redis root exists] ***********************************
+ok: [redis-node-3]
+
+TASK [redis : Check whether this Redis version is already built] ***************
+ok: [redis-node-3]
+
+TASK [redis : Download Redis source tarball: 7.2.6] ****************************
+changed: [redis-node-3]
+
+TASK [redis : Unpack source] ***************************************************
+changed: [redis-node-3]
+
+TASK [redis : Compile Redis 7.2.6] *********************************************
+changed: [redis-node-3]
+
+TASK [redis : Install Redis to versioned prefix: 7.2.6] ************************
+changed: [redis-node-3]
+
+TASK [redis : Point active symlinks at Redis 7.2.6] ****************************
+changed: [redis-node-3] => (item=redis-server)
+changed: [redis-node-3] => (item=redis-cli)
+changed: [redis-node-3] => (item=redis-benchmark)
+changed: [redis-node-3] => (item=redis-check-aof)
+changed: [redis-node-3] => (item=redis-check-rdb)
+
+TASK [Start Redis] *************************************************************
+changed: [redis-node-3]
+
+TASK [Result] ******************************************************************
+ok: [redis-node-3] => {
+    "msg": "redis-node-3 (10.10.0.13): now on Redis 7.2.6"
+}
+
+PLAY RECAP *********************************************************************
+redis-node-3               : ok=12   changed=7    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+→   redis-node-3: waiting to rejoin cluster + sync
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-4]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-4]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-4]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-4]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-4]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-4 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-4 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-4               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-4]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-4]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-4]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-4]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-4]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-4 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-4 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-4               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-4]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-4]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-4]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-4]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-4]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-4 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-4 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-4               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+[6/6] Upgraded master 10.10.0.13 (now replica) — cluster: ok
+→ Post-upgrade verification
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-1]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-1]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-1]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-1]
+
+TASK [Run node-agent verify] ***************************************************
+ok: [redis-node-1]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-1 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-1 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-1               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+PASS — 1000/1000 keys verified
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-1]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-1]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-1]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-1]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-1]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-1 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-1 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-1               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+Cluster State: ok
+
+MASTERS
+  10.10.0.14:6379 [master]  v7.2.6   slots: 10923-16383        keys: 343   mem: 1.89M
+  10.10.0.15:6379 [master]  v7.2.6   slots: 0-5460             keys: 333   mem: 1.89M
+  10.10.0.16:6379 [master]  v7.2.6   slots: 5461-10922         keys: 324   mem: 1.89M
+
+REPLICAS
+  10.10.0.11:6379 [replica] v7.2.6   replicating: 10.10.0.15:6379    mem: 1.83M
+  10.10.0.12:6379 [replica] v7.2.6   replicating: 10.10.0.16:6379    mem: 1.72M
+  10.10.0.13:6379 [replica] v7.2.6   replicating: 10.10.0.14:6379    mem: 1.73M
+
+
+✓ UPGRADE COMPLETE — all nodes on v7.2.6, data integrity verified

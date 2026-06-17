@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# redis-ctl — minimal lifecycle wrapper for the cluster node's redis-server.
+# Installed by Ansible. Used by playbooks (and humans) to start/stop/restart
+# the local Redis without systemd. Data dir + nodes.conf persist across
+# restarts, so the node keeps its cluster identity and dataset.
+set -euo pipefail
+
+CONF=/etc/redis/redis.conf
+PORT=6379
+PING() { redis-cli -p "$PORT" ping 2>/dev/null | grep -q PONG; }
+
+case "${1:-}" in
+  start)
+    if PING; then echo "redis already running ($(redis-server --version | awk '{print $3}'))"; exit 0; fi
+    redis-server "$CONF"
+    for _ in $(seq 1 60); do PING && { echo "started"; exit 0; }; sleep 0.5; done
+    echo "ERROR: redis failed to start" >&2; tail -n 20 /var/log/redis/redis.log >&2 || true; exit 1
+    ;;
+  stop)
+    if ! PING; then echo "not running"; exit 0; fi
+    # nosave: AOF + nodes.conf already persist data and cluster identity.
+    redis-cli -p "$PORT" shutdown nosave >/dev/null 2>&1 || true
+    for _ in $(seq 1 60); do PING || { echo "stopped"; exit 0; }; sleep 0.5; done
+    echo "ERROR: redis failed to stop" >&2; exit 1
+    ;;
+  restart)
+    "$0" stop
+    "$0" start
+    ;;
+  status)
+    if PING; then echo "UP"; else echo "DOWN"; fi
+    ;;
+  *)
+    echo "usage: redis-ctl {start|stop|restart|status}" >&2; exit 2
+    ;;
+esac

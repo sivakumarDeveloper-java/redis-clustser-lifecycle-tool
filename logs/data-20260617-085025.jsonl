@@ -1,0 +1,7 @@
+{"ts":"2026-06-17T03:20:25.684576027Z","event":"start","command":"data"}
+{"ts":"2026-06-17T03:20:26.284993254Z","event":"prereq_ok","runtime":"docker","runtime_version":"29.5.3","ansible_version":"2.17.14"}
+{"ts":"2026-06-17T03:20:26.305787012Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-1"}
+{"ts":"2026-06-17T03:20:32.967233968Z","event":"step","msg":"Seeding 1000 deterministic keys (value = sha256(key))"}
+{"ts":"2026-06-17T03:20:32.967771169Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-1"}
+{"ts":"2026-06-17T03:20:40.575131220Z","event":"ok","msg":"Seeded 1000 keys"}
+{"ts":"2026-06-17T03:20:40.575331266Z","event":"end"}

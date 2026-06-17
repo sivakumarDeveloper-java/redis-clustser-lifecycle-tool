@@ -1,0 +1,8 @@
+{"ts":"2026-06-17T03:15:24.472166751Z","event":"start","command":"provision"}
+{"ts":"2026-06-17T03:15:24.922886582Z","event":"prereq_ok","runtime":"docker","runtime_version":"29.5.3","ansible_version":"2.17.14"}
+{"ts":"2026-06-17T03:15:24.947532973Z","event":"step","msg":"Provisioning Redis 7.0.15 on 6 nodes and forming the cluster"}
+{"ts":"2026-06-17T03:15:24.949067722Z","event":"ansible","playbook":"provision.yml"}
+{"ts":"2026-06-17T03:19:08.731468515Z","event":"step","msg":"Gathering cluster topology"}
+{"ts":"2026-06-17T03:19:08.749118915Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-1"}
+{"ts":"2026-06-17T03:19:45.924563456Z","event":"ok","msg":"Redis Cluster 7.0.15 is operational (cluster_state:ok)"}
+{"ts":"2026-06-17T03:19:45.924930121Z","event":"end"}

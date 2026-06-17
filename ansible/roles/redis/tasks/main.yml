@@ -1,0 +1,15 @@
+---
+# Full node setup: build/install the requested Redis version, lay down config,
+# then ensure the service is running. Each block is tagged so playbooks can run
+# just part of the role (the rolling upgrade reuses `install`).
+- name: Install Redis
+  ansible.builtin.import_tasks: install.yml
+  tags: [install]
+
+- name: Configure Redis for cluster mode
+  ansible.builtin.import_tasks: configure.yml
+  tags: [configure]
+
+- name: Manage the Redis service
+  ansible.builtin.import_tasks: service.yml
+  tags: [service]

@@ -1,0 +1,4 @@
+{"ts":"2026-06-17T03:15:16.397255128Z","event":"start","command":"infra"}
+{"ts":"2026-06-17T03:15:17.277385084Z","event":"prereq_ok","runtime":"docker","runtime_version":"29.5.3","ansible_version":"2.17.14"}
+{"ts":"2026-06-17T03:15:19.224142471Z","event":"ok","msg":"Infrastructure torn down"}
+{"ts":"2026-06-17T03:15:19.224377130Z","event":"end"}

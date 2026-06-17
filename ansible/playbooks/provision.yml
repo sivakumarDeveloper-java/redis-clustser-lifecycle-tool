@@ -1,0 +1,61 @@
+---
+# Phase 1 — Provision: install Redis on all nodes, configure cluster mode,
+# start them, then form the cluster from one node. Idempotent: re-running on an
+# already-formed cluster is a no-op (stretch S4).
+
+- name: Install, configure and start Redis on all nodes
+  hosts: redis_nodes
+  gather_facts: true
+  roles:
+    - redis
+
+- name: Form the Redis Cluster
+  hosts: redis_nodes
+  gather_facts: false
+  run_once: true
+  vars:
+    replicas_per_master: "{{ redis_replicas_per_master | default(1) }}"
+  tasks:
+    - name: Check current cluster state
+      ansible.builtin.command: redis-cli -p {{ redis_port }} cluster info
+      register: cinfo
+      changed_when: false
+
+    - name: Parse cluster facts
+      ansible.builtin.set_fact:
+        cluster_ok: "{{ 'cluster_state:ok' in cinfo.stdout }}"
+        known_nodes: "{{ (cinfo.stdout | regex_search('cluster_known_nodes:(\\d+)', '\\1') | first | int) if 'cluster_known_nodes' in cinfo.stdout else 0 }}"
+
+    - name: Build node address list (masters first, then replicas)
+      ansible.builtin.set_fact:
+        create_targets: >-
+          {{ (groups['redis_masters'] | map('extract', hostvars, 'redis_ip') | list)
+             + (groups['redis_replicas'] | map('extract', hostvars, 'redis_ip') | list) }}
+
+    - name: Create the cluster
+      when: not (cluster_ok and known_nodes | int >= (groups['redis_nodes'] | length))
+      changed_when: true
+      ansible.builtin.command: >-
+        redis-cli --cluster create
+        {{ create_targets | map('regex_replace', '$', ':' ~ redis_port) | join(' ') }}
+        --cluster-replicas {{ replicas_per_master }}
+        --cluster-yes
+      register: create_out
+
+    - name: Show cluster create output
+      when: create_out is defined and create_out.stdout is defined
+      ansible.builtin.debug:
+        var: create_out.stdout_lines
+
+    - name: Already formed
+      when: cluster_ok and known_nodes | int >= (groups['redis_nodes'] | length)
+      ansible.builtin.debug:
+        msg: "Cluster already formed ({{ known_nodes }} known nodes) — skipping create (idempotent)."
+
+    - name: Wait for cluster to converge to ok
+      ansible.builtin.command: redis-cli -p {{ redis_port }} cluster info
+      register: postinfo
+      until: "'cluster_state:ok' in postinfo.stdout"
+      retries: 20
+      delay: 2
+      changed_when: false

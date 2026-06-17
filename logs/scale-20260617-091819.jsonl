@@ -1,0 +1,17 @@
+{"ts":"2026-06-17T03:48:19.325100698Z","event":"start","command":"scale"}
+{"ts":"2026-06-17T03:48:19.779819331Z","event":"prereq_ok","runtime":"docker","runtime_version":"29.5.3","ansible_version":"2.17.14"}
+{"ts":"2026-06-17T03:48:19.807096252Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-1"}
+{"ts":"2026-06-17T03:48:26.646111306Z","event":"step","msg":"Scaling in master 10.10.0.17 (43fc23d0eef83ed392b45c6d75335afe6a2daa66) and its 1 replica(s)"}
+{"ts":"2026-06-17T03:48:26.646468856Z","event":"step","msg":"Migrating slots off 10.10.0.17"}
+{"ts":"2026-06-17T03:48:26.646742437Z","event":"ansible","playbook":"cluster_admin.yml"}
+{"ts":"2026-06-17T03:50:04.370192755Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-1"}
+{"ts":"2026-06-17T03:50:12.763853835Z","event":"ok","msg":"10.10.0.17 now owns 0 slots"}
+{"ts":"2026-06-17T03:50:12.764091730Z","event":"step","msg":"Removing replica 10.10.0.18"}
+{"ts":"2026-06-17T03:50:12.764317521Z","event":"ansible","playbook":"cluster_admin.yml"}
+{"ts":"2026-06-17T03:50:13.697010953Z","event":"step","msg":"Removing master 10.10.0.17"}
+{"ts":"2026-06-17T03:50:13.697240649Z","event":"ansible","playbook":"cluster_admin.yml"}
+{"ts":"2026-06-17T03:50:15.828213530Z","event":"ok","msg":"removed container redis-node-8"}
+{"ts":"2026-06-17T03:50:16.818796868Z","event":"ok","msg":"removed container redis-node-7"}
+{"ts":"2026-06-17T03:50:16.819507655Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-1"}
+{"ts":"2026-06-17T03:50:23.610749329Z","event":"ok","msg":"Scale-in complete: 3 masters, cluster_state:ok"}
+{"ts":"2026-06-17T03:50:23.610950002Z","event":"end"}

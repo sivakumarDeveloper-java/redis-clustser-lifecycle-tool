@@ -1,0 +1,6 @@
+{"ts":"2026-06-17T03:21:03.177199479Z","event":"start","command":"data"}
+{"ts":"2026-06-17T03:21:03.564117450Z","event":"prereq_ok","runtime":"docker","runtime_version":"29.5.3","ansible_version":"2.17.14"}
+{"ts":"2026-06-17T03:21:03.586099808Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-1"}
+{"ts":"2026-06-17T03:21:10.929706682Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-1"}
+{"ts":"2026-06-17T03:21:17.825934327Z","event":"verify_result","verified":"1000","missing":"0","mismatched":"0","pass":"true"}
+{"ts":"2026-06-17T03:21:17.826508503Z","event":"end"}

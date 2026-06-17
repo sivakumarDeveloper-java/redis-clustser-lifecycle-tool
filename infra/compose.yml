@@ -1,0 +1,92 @@
+# 6-node Redis Cluster infrastructure (3 masters + 3 replicas).
+#
+# Each service is an Ubuntu 22.04 "server" running only sshd; Ansible installs
+# Redis later. Nodes sit on a static subnet (10.10.0.0/24) so the Ansible
+# inventory and Redis cluster bus have fixed, predictable IPs.
+#
+# SSH is published to the host on ports 2211..2216 so the host (Ansible control
+# node) can reach each node even when container IPs are not routable from the
+# host (e.g. Podman/Docker on macOS, where containers live inside a VM).
+#
+# Works with both `docker compose` and `podman-compose`. The redis-tool prefers
+# this file; see `redis-tool infra up`.
+#
+# NOTE: `authorized_keys` (the control node's SSH public key) is bind-mounted into
+# each node at runtime (NOT baked into the image), so a regenerated key is always
+# picked up without an image rebuild. `redis-tool infra up` generates it in this
+# directory before starting the nodes.
+
+networks:
+  redis-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.0.0/24
+          gateway: 10.10.0.1
+
+x-redis-node: &redis-node
+  build:
+    context: .
+    dockerfile: Containerfile
+  image: redis-cluster-node:ubuntu22.04
+  restart: unless-stopped
+  volumes:
+    # Control node's public key, mounted read-only at runtime (not baked into the
+    # image). redis-tool infra up regenerates ./authorized_keys before starting
+    # the nodes, so the key is always current — identical on Docker and Podman.
+    - ./authorized_keys:/root/.ssh/authorized_keys:ro
+
+services:
+  redis-node-1:
+    <<: *redis-node
+    container_name: redis-node-1
+    hostname: redis-node-1
+    ports: ["2211:22"]
+    networks:
+      redis-net:
+        ipv4_address: 10.10.0.11
+
+  redis-node-2:
+    <<: *redis-node
+    container_name: redis-node-2
+    hostname: redis-node-2
+    ports: ["2212:22"]
+    networks:
+      redis-net:
+        ipv4_address: 10.10.0.12
+
+  redis-node-3:
+    <<: *redis-node
+    container_name: redis-node-3
+    hostname: redis-node-3
+    ports: ["2213:22"]
+    networks:
+      redis-net:
+        ipv4_address: 10.10.0.13
+
+  redis-node-4:
+    <<: *redis-node
+    container_name: redis-node-4
+    hostname: redis-node-4
+    ports: ["2214:22"]
+    networks:
+      redis-net:
+        ipv4_address: 10.10.0.14
+
+  redis-node-5:
+    <<: *redis-node
+    container_name: redis-node-5
+    hostname: redis-node-5
+    ports: ["2215:22"]
+    networks:
+      redis-net:
+        ipv4_address: 10.10.0.15
+
+  redis-node-6:
+    <<: *redis-node
+    container_name: redis-node-6
+    hostname: redis-node-6
+    ports: ["2216:22"]
+    networks:
+      redis-net:
+        ipv4_address: 10.10.0.16

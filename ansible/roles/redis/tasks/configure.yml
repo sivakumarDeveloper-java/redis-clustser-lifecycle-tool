@@ -1,0 +1,28 @@
+---
+# Lay down runtime directories, the redis.conf for cluster mode, and the
+# redis-ctl lifecycle helper. Templating the config notifies a restart so a
+# changed config is picked up (handler is skipped on first install since the
+# service task starts it fresh).
+
+- name: Ensure Redis runtime directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ redis_conf_dir }}"
+    - "{{ redis_data_dir }}"
+    - "{{ redis_log_dir }}"
+
+- name: Install redis-ctl lifecycle helper
+  ansible.builtin.copy:
+    src: redis-ctl
+    dest: "{{ redis_bin_dir }}/redis-ctl"
+    mode: "0755"
+
+- name: Render redis.conf (cluster mode)
+  ansible.builtin.template:
+    src: redis.conf.j2
+    dest: "{{ redis_conf_file }}"
+    mode: "0644"
+  notify: Restart redis

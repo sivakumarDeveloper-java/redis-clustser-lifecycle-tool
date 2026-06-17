@@ -1,0 +1,43 @@
+✓ Podman 5.8.2 found
+✓ Ansible 2.21.0 found
+Proceeding...
+
+PLAY [Run node-agent data operation (Java)] ************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [redis-node-1]
+
+TASK [Ensure OpenJDK 17 (headless JRE) is present] *****************************
+ok: [redis-node-1]
+
+TASK [Locate the Java 17 runtime] **********************************************
+ok: [redis-node-1]
+
+TASK [Copy redis-tool jar (the node-agent)] ************************************
+ok: [redis-node-1]
+
+TASK [Run node-agent facts] ****************************************************
+ok: [redis-node-1]
+
+TASK [Ensure runtime dir exists on control host] *******************************
+ok: [redis-node-1 -> localhost]
+
+TASK [Write agent output to control host] **************************************
+changed: [redis-node-1 -> localhost]
+
+PLAY RECAP *********************************************************************
+redis-node-1               : ok=7    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+
+Cluster State: ok
+
+MASTERS
+  10.10.0.11:6379 [master]  v7.0.15  slots: 0-5460             keys: 333   mem: 1.99M
+  10.10.0.12:6379 [master]  v7.0.15  slots: 5461-10922         keys: 324   mem: 1.95M
+  10.10.0.13:6379 [master]  v7.0.15  slots: 10923-16383        keys: 343   mem: 1.95M
+
+REPLICAS
+  10.10.0.14:6379 [replica] v7.0.15  replicating: 10.10.0.13:6379    mem: 1.91M
+  10.10.0.15:6379 [replica] v7.0.15  replicating: 10.10.0.11:6379    mem: 1.91M
+  10.10.0.16:6379 [replica] v7.0.15  replicating: 10.10.0.12:6379    mem: 1.91M
+

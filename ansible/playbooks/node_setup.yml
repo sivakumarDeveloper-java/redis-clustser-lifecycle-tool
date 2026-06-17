@@ -1,0 +1,9 @@
+---
+# Full Redis setup (install + configure + start) for node(s) being added to the
+# cluster during scale-out. Reuses the same `redis` role as provisioning.
+# Target the new nodes with --limit.
+- name: Set up Redis on (new) node(s)
+  hosts: cluster
+  gather_facts: true
+  roles:
+    - redis

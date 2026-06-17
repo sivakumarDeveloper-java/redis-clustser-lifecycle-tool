@@ -1,0 +1,4 @@
+{"ts":"2026-06-17T03:21:41.889524719Z","event":"start","command":"status"}
+{"ts":"2026-06-17T03:21:42.274626142Z","event":"prereq_ok","runtime":"docker","runtime_version":"29.5.3","ansible_version":"2.17.14"}
+{"ts":"2026-06-17T03:21:42.296803656Z","event":"ansible","playbook":"node_agent_java.yml","limit":"redis-node-1"}
+{"ts":"2026-06-17T03:21:49.266350465Z","event":"end"}

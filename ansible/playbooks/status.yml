@@ -1,0 +1,26 @@
+---
+# Ansible-native cluster status (human-readable). The CLI's `status` command
+# uses the node-agent for structured output; this playbook is a handy manual
+# equivalent: `ansible-playbook playbooks/status.yml`.
+- name: Show cluster status
+  hosts: redis_nodes
+  gather_facts: false
+  run_once: true
+  tasks:
+    - name: CLUSTER INFO
+      ansible.builtin.command: redis-cli -p {{ redis_port }} cluster info
+      register: cinfo
+      changed_when: false
+
+    - name: CLUSTER NODES
+      ansible.builtin.command: redis-cli -p {{ redis_port }} cluster nodes
+      register: cnodes
+      changed_when: false
+
+    - name: Cluster info
+      ansible.builtin.debug:
+        var: cinfo.stdout_lines
+
+    - name: Cluster nodes
+      ansible.builtin.debug:
+        var: cnodes.stdout_lines

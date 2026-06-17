@@ -1,0 +1,4 @@
+---
+- name: Restart redis
+  ansible.builtin.command: redis-ctl restart
+  changed_when: true
