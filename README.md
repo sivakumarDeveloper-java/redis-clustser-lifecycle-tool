@@ -92,6 +92,9 @@ flowchart LR
 ```bash
 # If redis-tool lost its executable bit after unzip (common on Windows):
 chmod +x redis-tool
+
+# Fix SSH Key permissions(required before provisioning)
+chmod 600 ansible/keys/redis_cluster
  
 # Bring up the 6-node infrastructure
 ./redis-tool infra up
