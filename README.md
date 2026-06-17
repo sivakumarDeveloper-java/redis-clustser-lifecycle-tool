@@ -10,6 +10,82 @@
 **No manual SSH. No manual redis-cli. Everything is driven through the CLI.**
  
 ---
+## Under the hood
+ 
+`redis-tool` manages a 6-node Redis Cluster (3 masters + 3 replicas) running inside containers that simulate real SSH-accessible servers.
+ 
+- Written in **Java 17** — one self-contained executable (bash launcher + embedded jar).
+- Drives **Ansible** playbooks for all remote work — no Galaxy collections, everything hand-written.
+- Works on **Docker** or **Podman**, **macOS**, **Linux**, and **WSL2**.
+- The same executable copies itself onto a node to do data operations (seed/verify) from inside the container network — no cross-compiling needed.
+ 
+ ---
+ 
+### Architecture
+ 
+```mermaid
+flowchart LR
+    subgraph HOST["Host machine"]
+        CLI["redis-tool\nJava 17 CLI"]
+        ANS["Ansible\nplaybooks"]
+        CLI -->|drives| ANS
+    end
+ 
+    subgraph NET["Container network  10.10.0.0/24"]
+        subgraph M["Masters"]
+            N1["node-1  10.10.0.11"]
+            N2["node-2  10.10.0.12"]
+            N3["node-3  10.10.0.13"]
+        end
+        subgraph R["Replicas"]
+            N4["node-4  10.10.0.14"]
+            N5["node-5  10.10.0.15"]
+            N6["node-6  10.10.0.16"]
+        end
+        AGT["node-agent\nsame jar · RESP direct"]
+    end
+ 
+    ANS -->|"SSH :2211–:2216"| NET
+    ANS -.->|"copy jar + invoke"| AGT
+    AGT -.->|"RESP · 10.10.0.x"| M
+```
+
+### Full workflow
+ 
+```mermaid
+flowchart LR
+    A([infra up]) --> B([provision])
+    B --> C([data seed])
+    C --> D([data verify])
+    D --> E([status])
+    E --> F([upgrade])
+    F --> G([verify --full])
+    G --> H([infra down])
+ 
+    F -. "fail-fast\nleave cluster as-is" .-> ERR([❌ error])
+    G -. "all checks passed" .-> OK([✅ UPGRADE COMPLETE])
+```
+ 
+---
+ 
+## Features at a glance
+ 
+| Command | What it does |
+|---|---|
+| `infra up / down / status` | Spin the 6 containers up or down |
+| `provision --version V` | Build Redis from source, configure cluster mode, form the cluster |
+| `data seed --keys N` | Insert N deterministic keys (`value = sha256(key)`) |
+| `data verify` | Read all keys back, recompute, print **PASS** or **FAIL** |
+| `status` | Cluster topology — roles, versions, slot ranges, key counts, memory |
+| `upgrade --target-version V --strategy rolling` | Zero-downtime rolling upgrade |
+| `verify --full` | 5-point health check — data, versions, slots, cluster state, replication |
+| `scale --add-nodes 2` | Add a master+replica pair and rebalance slots |
+| `scale --remove-node ID` | Drain and remove a master and its replica |
+| `rollback --target-version V` | Roll back upgraded nodes to a previous version |
+ 
+---
+ 
+---
  
 ## Quick start
  
@@ -51,76 +127,6 @@ export REDIS_TOOL_RUNTIME=docker   # or: podman
  
 ---
  
-## What this is
- 
-`redis-tool` manages a 6-node Redis Cluster (3 masters + 3 replicas) running inside containers that simulate real SSH-accessible servers.
- 
-- Written in **Java 17** — one self-contained executable (bash launcher + embedded jar)
-- Drives **Ansible** playbooks for all remote work — no Galaxy collections, everything hand-written
-- Works on **Docker** or **Podman**, **macOS**, **Linux**, and **WSL2**
-- The same executable copies itself onto a node to do data operations (seed/verify) from inside the container network — no cross-compiling needed
-### Architecture
- 
-```mermaid
-flowchart LR
-    subgraph HOST["Host machine"]
-        CLI["redis-tool\nJava 17 CLI"]
-        ANS["Ansible\nplaybooks"]
-        CLI -->|drives| ANS
-    end
- 
-    subgraph NET["Container network  10.10.0.0/24"]
-        subgraph M["Masters"]
-            N1["node-1  10.10.0.11"]
-            N2["node-2  10.10.0.12"]
-            N3["node-3  10.10.0.13"]
-        end
-        subgraph R["Replicas"]
-            N4["node-4  10.10.0.14"]
-            N5["node-5  10.10.0.15"]
-            N6["node-6  10.10.0.16"]
-        end
-        AGT["node-agent\nsame jar · RESP direct"]
-    end
- 
-    ANS -->|"SSH :2211–:2216"| NET
-    ANS -.->|"copy jar + invoke"| AGT
-    AGT -.->|"RESP · 10.10.0.x"| M
-```
- 
-### Full workflow
- 
-```mermaid
-flowchart LR
-    A([infra up]) --> B([provision])
-    B --> C([data seed])
-    C --> D([data verify])
-    D --> E([status])
-    E --> F([upgrade])
-    F --> G([verify --full])
-    G --> H([infra down])
- 
-    F -. "fail-fast\nleave cluster as-is" .-> ERR([❌ error])
-    G -. "all checks passed" .-> OK([✅ UPGRADE COMPLETE])
-```
- 
----
- 
-## Features at a glance
- 
-| Command | What it does |
-|---|---|
-| `infra up / down / status` | Spin the 6 containers up or down |
-| `provision --version V` | Build Redis from source, configure cluster mode, form the cluster |
-| `data seed --keys N` | Insert N deterministic keys (`value = sha256(key)`) |
-| `data verify` | Read all keys back, recompute, print **PASS** or **FAIL** |
-| `status` | Cluster topology — roles, versions, slot ranges, key counts, memory |
-| `upgrade --target-version V --strategy rolling` | Zero-downtime rolling upgrade |
-| `verify --full` | 5-point health check — data, versions, slots, cluster state, replication |
-| `scale --add-nodes 2` | Add a master+replica pair and rebalance slots |
-| `scale --remove-node ID` | Drain and remove a master and its replica |
-| `rollback --target-version V` | Roll back upgraded nodes to a previous version |
- 
 ---
  
 ## Real output
@@ -155,6 +161,7 @@ Seed summary:
 PASS — 1000/1000 keys verified
 ```
  
+ 
 ### After rolling upgrade to 7.2.6
  
 ```
@@ -188,13 +195,60 @@ Full verification:
  
 ---
  
+---
+ 
+## Rolling upgrade — how it works
+ 
+The goal: keep `cluster_state:ok` throughout, zero client-visible downtime.
+ 
+**Versioned installs with symlink swap**
+ 
+Each Redis version builds into `/opt/redis/<version>/`. The binary `/usr/local/bin/redis-server` is a symlink to the active version. Upgrading a node = build the new version → restart → node picks up the new binary via the symlink, keeping its cluster identity and data (`nodes.conf` + data directory are untouched). Rollback is the exact same mechanism in reverse.
+ 
+**Upgrade order**
+ 
+```mermaid
+flowchart TD
+    PF["🔍 Pre-flight\ncluster_state:ok · all 6 nodes reachable\nversion ≠ target · data verify baseline"]
+ 
+    PF --> R1["Stop replica 10.10.0.14"]
+    R1 --> R1I["Install v7.2.6"] --> R1S["Start + wait sync"] --> R1C{"cluster:ok?"}
+    R1C -->|yes| R2["Stop replica 10.10.0.15"]
+    R2 --> R2I["Install v7.2.6"] --> R2S["Start + wait sync"] --> R2C{"cluster:ok?"}
+    R2C -->|yes| R3["Stop replica 10.10.0.16"]
+    R3 --> R3I["Install v7.2.6"] --> R3S["Start + wait sync"] --> R3C{"cluster:ok?"}
+ 
+    R3C -->|yes| M1F["CLUSTER FAILOVER → replica promoted"]
+    M1F --> M1S["Stop master 10.10.0.11"] --> M1I["Install v7.2.6"] --> M1R["Rejoin as replica"] --> M1C{"cluster:ok?"}
+    M1C -->|yes| M2F["CLUSTER FAILOVER → replica promoted"]
+    M2F --> M2S["Stop master 10.10.0.12"] --> M2I["Install v7.2.6"] --> M2R["Rejoin as replica"] --> M2C{"cluster:ok?"}
+    M2C -->|yes| M3F["CLUSTER FAILOVER → replica promoted"]
+    M3F --> M3S["Stop master 10.10.0.13"] --> M3I["Install v7.2.6"] --> M3R["Rejoin as replica"] --> M3C{"cluster:ok?"}
+ 
+    M3C -->|yes| DONE["✅ UPGRADE COMPLETE\ndata verify · status · all nodes v7.2.6"]
+ 
+    R1C -->|no ❌| FAIL["🛑 Stop — print failed node + step\nleave cluster as-is"]
+    R2C -->|no ❌| FAIL
+    R3C -->|no ❌| FAIL
+    M1C -->|no ❌| FAIL
+    M2C -->|no ❌| FAIL
+    M3C -->|no ❌| FAIL
+```
+ 
+**Fail-fast**: any step failure stops the upgrade immediately, prints the failing node and step, leaves the cluster in its current state.
+ 
+> After the upgrade, master/replica roles are swapped vs. the start — this is expected. All 16384 slots remain covered and every master still has a replica.
+ 
+---
+---
+ 
 ## Prerequisites
  
 Every command runs a prerequisite check before doing anything:
  
-1. **Docker or Podman** (either works; Podman preferred if both are installed)
-2. **Ansible >= 2.14**
-3. **JRE 17+** on the host (to run the embedded jar)
+1. **Docker or Podman** (either works; Podman preferred if both are installed).
+2. **Ansible >= 2.14**.
+3. **JRE 17+** on the host (to run the embedded jar).
 If something is missing, the tool tells you exactly what to install:
  
 ```
@@ -249,73 +303,6 @@ processors=4
  
 ---
  
----
- 
-## Rolling upgrade — how it works
- 
-The goal: keep `cluster_state:ok` throughout, zero client-visible downtime.
- 
-**Versioned installs with symlink swap**
- 
-Each Redis version builds into `/opt/redis/<version>/`. The binary `/usr/local/bin/redis-server` is a symlink to the active version. Upgrading a node = build the new version → restart → node picks up the new binary via the symlink, keeping its cluster identity and data (`nodes.conf` + data directory are untouched). Rollback is the exact same mechanism in reverse.
- 
-**Upgrade order**
- 
-```mermaid
-flowchart TD
-    PF["🔍 Pre-flight\ncluster_state:ok · all 6 nodes reachable\nversion ≠ target · data verify baseline"]
- 
-    PF --> R1["Stop replica 10.10.0.14"]
-    R1 --> R1I["Install v7.2.6"] --> R1S["Start + wait sync"] --> R1C{"cluster:ok?"}
-    R1C -->|yes| R2["Stop replica 10.10.0.15"]
-    R2 --> R2I["Install v7.2.6"] --> R2S["Start + wait sync"] --> R2C{"cluster:ok?"}
-    R2C -->|yes| R3["Stop replica 10.10.0.16"]
-    R3 --> R3I["Install v7.2.6"] --> R3S["Start + wait sync"] --> R3C{"cluster:ok?"}
- 
-    R3C -->|yes| M1F["CLUSTER FAILOVER → replica promoted"]
-    M1F --> M1S["Stop master 10.10.0.11"] --> M1I["Install v7.2.6"] --> M1R["Rejoin as replica"] --> M1C{"cluster:ok?"}
-    M1C -->|yes| M2F["CLUSTER FAILOVER → replica promoted"]
-    M2F --> M2S["Stop master 10.10.0.12"] --> M2I["Install v7.2.6"] --> M2R["Rejoin as replica"] --> M2C{"cluster:ok?"}
-    M2C -->|yes| M3F["CLUSTER FAILOVER → replica promoted"]
-    M3F --> M3S["Stop master 10.10.0.13"] --> M3I["Install v7.2.6"] --> M3R["Rejoin as replica"] --> M3C{"cluster:ok?"}
- 
-    M3C -->|yes| DONE["✅ UPGRADE COMPLETE\ndata verify · status · all nodes v7.2.6"]
- 
-    R1C -->|no ❌| FAIL["🛑 Stop — print failed node + step\nleave cluster as-is"]
-    R2C -->|no ❌| FAIL
-    R3C -->|no ❌| FAIL
-    M1C -->|no ❌| FAIL
-    M2C -->|no ❌| FAIL
-    M3C -->|no ❌| FAIL
-```
- 
-**Fail-fast**: any step failure stops the upgrade immediately, prints the failing node and step, leaves the cluster in its current state.
- 
-> After the upgrade, master/replica roles are swapped vs. the start — this is expected. All 16384 slots remain covered and every master still has a replica.
- 
----
- 
-## Project layout
- 
-```
-redis-tool                  Self-contained executable: bash launcher + embedded
-                            Java 17 jar (also used as the node-agent)
- 
-ansible/
-  ansible.cfg
-  inventory/hosts.ini       6 nodes — SSH ports + internal cluster IPs
-  playbooks/                provision, install_version, service, failover,
-                            node_agent_java, node_setup, cluster_admin
-  roles/redis/              install (build from source), configure, service
- 
-infra/
-  Containerfile             Ubuntu 22.04 + sshd (Redis installed by Ansible)
-  compose.yml               6 nodes, static subnet 10.10.0.0/24,
-                            published ports 2211..2216
- 
-output/                     Terminal output from real runs
-logs/                       Per-command JSONL structured logs (created at runtime)
-```
  
 ### Node addresses
  
