@@ -97,7 +97,7 @@ flowchart LR
 
 # Clone the repo
 git clone https://github.com/sivakumarDeveloper-java/redis-clustser-lifecycle-tool.git
-cd redis-clustser-lifecycle-tool
+cd redis-clustser-lifecycle-tool/submission
 
 # If redis-tool lost its executable bit after unzip (common on Windows):
 chmod +x redis-tool
