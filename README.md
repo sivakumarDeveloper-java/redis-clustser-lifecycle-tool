@@ -90,6 +90,15 @@ flowchart LR
 ## Quick start
  
 ```bash
+
+# Prerequisites
+- Docker
+- Ansible
+
+# Clone the repo
+git clone https://github.com/sivakumarDeveloper-java/redis-clustser-lifecycle-tool.git
+cd redis-clustser-lifecycle-tool
+
 # If redis-tool lost its executable bit after unzip (common on Windows):
 chmod +x redis-tool
 
